@@ -1,0 +1,211 @@
+// AXKAN AI - Agency Database Schema (v1.0)
+// Designed for Enterprise B2B Compliance & FinOps
+// Connected to: Supabase (bpekysriovazsomgmcye)
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --------------------------------------------------------
+// CATÁLOGO MAESTRO (Knowledge Base)
+// --------------------------------------------------------
+
+model Tool {
+  id          String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name        String   @unique
+  slug        String   @unique
+  description String
+  websiteUrl  String
+  logoUrl     String?
+
+  // Business Classification (The "Resolver" Logic)
+  costTier       CostTier       @default(PAID)
+  technicalLevel TechnicalLevel @default(NO_CODE)
+  
+  // Compliance & Security (The "Bank" Standard)
+  isGdprCompliant   Boolean @default(false)
+  isLfpdpppCompliant Boolean @default(false)
+  dataResidency     String?
+  auditDate         DateTime?
+
+  // Relations
+  categories      Category[]      @relation("ToolCategories")
+  affiliateLinks  AffiliateLink[]
+  reviews         ToolReview[]
+  strategies      Strategy[]      @relation("ToolStrategies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@index([costTier, technicalLevel]) 
+  @@index([isGdprCompliant, isLfpdpppCompliant])
+}
+
+model Category {
+  id          String @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name        String @unique
+  slug        String @unique
+  description String?
+  
+  tools       Tool[] @relation("ToolCategories")
+}
+
+// --------------------------------------------------------
+// FINOPS & MONETIZACIÓN (Invisible Income)
+// --------------------------------------------------------
+
+model AffiliateLink {
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  
+  provider       AffiliateProvider
+  trackingUrl    String
+  commissionRate Decimal? @db.Decimal(5, 2)
+  isActive       Boolean @default(true)
+
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// --------------------------------------------------------
+// USUARIOS & CONSULTORÍA (The Agency)
+// --------------------------------------------------------
+
+model UserProfile {
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  email     String   @unique
+  fullName  String?
+  companyName String?
+  
+  plan      SubscriptionPlan @default(FREE)
+  
+  consultations Consultation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Consultation {
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  userId    String
+  user      UserProfile @relation(fields: [userId], references: [id])
+  
+  objective String
+  diagnosis Json     @db.JsonB
+  prescription Json  @db.JsonB
+
+  status    ConsultationStatus @default(PENDING)
+  
+  createdAt DateTime @default(now())
+}
+
+model ToolReview {
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  reviewer  String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}
+
+// --------------------------------------------------------
+// BIBLIOTECA DE CONOCIMIENTO (The Strategy Engine)
+// --------------------------------------------------------
+
+model KnowledgeSource {
+  id          String         @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name        String         @unique
+  url         String?
+  type        SourceType     @default(YOUTUBE)
+  trustScore  Int            @default(50)
+  
+  strategies  Strategy[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now())
+}
+
+model Strategy {
+  id          String         @id @default(dbgenerated("(gen_random_uuid())::text"))
+  title       String
+  slug        String         @unique
+  description String
+  
+  sourceId    String
+  source      KnowledgeSource @relation(fields: [sourceId], references: [id])
+  originalUrl String?
+  
+  difficulty  TechnicalLevel @default(NO_CODE)
+  costTier    CostTier       @default(FREE)
+  
+  tools       Tool[]         @relation("ToolStrategies")
+  steps       StrategyStep[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now())
+}
+
+model StrategyStep {
+  id          String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  strategyId  String
+  strategy    Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade)
+  
+  orderIndex  Int
+  content     String
+  isRequired  Boolean  @default(true)
+}
+
+// --------------------------------------------------------
+// ENUMS (Taxonomy)
+// --------------------------------------------------------
+
+enum CostTier {
+  FREE
+  FREEMIUM
+  PAID
+  ENTERPRISE_ONLY
+}
+
+enum TechnicalLevel {
+  NO_CODE
+  LOW_CODE
+  PRO_CODE
+}
+
+enum AffiliateProvider {
+  PARTNERSTACK
+  IMPACT
+  REWARD_FUL
+  DIRECT
+  OTHER
+}
+
+enum SubscriptionPlan {
+  FREE
+  PRO_MONTHLY
+  PRO_YEARLY
+  ENTERPRISE
+}
+
+enum ConsultationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum SourceType {
+  YOUTUBE
+  NEWSLETTER
+  FORUM
+  OFFICIAL_DOCS
+  BLOG
+  OTHER
+}
