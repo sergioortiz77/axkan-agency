@@ -119,18 +119,51 @@ export default function DashboardPage() {
             <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-4 ml-1">Herramientas Detectadas</h3>
                 <div className="grid grid-cols-1 gap-3">
-                    {detectedTools.length > 0 ? detectedTools.map((tool: any) => (
-                        <GlassCard key={tool.id} className="p-3 !py-2 flex items-center gap-3 hover:!bg-white/5 cursor-pointer">
-                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xs">
-                                {tool.name.substring(0, 2).toUpperCase()}
-                            </div>
-                            <div>
-                                <div className="font-medium text-sm">{tool.name}</div>
-                                <div className="text-xs text-gray-500">{tool.costTier}</div>
-                            </div>
-                        </GlassCard>
-                    )) : (
-                        <div className="text-xs text-gray-600 italic px-2">No se han detectado herramientas.</div>
+                    {detectedTools.length > 0 ? detectedTools.map((tool: any) => {
+                        // Logic for affiliate link or fallback
+                        const affiliateLink = tool.affiliateLinks?.find((link: any) => link.isActive)?.trackingUrl;
+                        const targetUrl = affiliateLink || tool.websiteUrl || '#';
+                        const isClickable = targetUrl !== '#';
+
+                        return (
+                            <a
+                                key={tool.id}
+                                href={targetUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block"
+                            >
+                                <GlassCard
+                                    className={`p-3 !py-2 flex items-center gap-3 hover:!bg-white/5 cursor-pointer transition-colors group border-transparent hover:border-cyan-500/30 ${isClickable ? 'hover:shadow-[0_0_15px_rgba(6,182,212,0.15)]' : ''}`}
+                                >
+                                    <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xs ring-1 ring-white/5 group-hover:ring-cyan-500/40 transition-all">
+                                        {tool.name.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="font-medium text-sm text-gray-200 group-hover:text-white truncate flex items-center gap-2">
+                                            {tool.name}
+                                            {affiliateLink && (
+                                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" title="Recomendado" />
+                                            )}
+                                        </div>
+                                        <div className="text-xs text-gray-500 group-hover:text-gray-400">{tool.costTier}</div>
+                                    </div>
+                                    {isClickable && (
+                                        <div className="opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                                <polyline points="15 3 21 3 21 9"></polyline>
+                                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                                            </svg>
+                                        </div>
+                                    )}
+                                </GlassCard>
+                            </a>
+                        );
+                    }) : (
+                        <div className="text-xs text-gray-600 italic px-2 py-4 text-center border border-dashed border-white/5 rounded-lg">
+                            No se han detectado herramientas.
+                        </div>
                     )}
                 </div>
             </div>
@@ -162,7 +195,11 @@ export default function DashboardPage() {
     );
 
     return (
-        <GlassLayout sidebarContent={SidebarNav} rightPanelContent={RightPanel}>
+        <GlassLayout
+            sidebarContent={SidebarNav}
+            rightPanelContent={RightPanel}
+            hasNewTools={detectedTools.length > 0} // Prop to trigger rocket pulse
+        >
             <div className="flex-1 flex flex-col h-full relative">
 
                 {/* Chat Area / Content */}

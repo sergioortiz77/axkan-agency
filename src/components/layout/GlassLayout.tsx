@@ -8,12 +8,14 @@ type GlassLayoutProps = {
     children: React.ReactNode;
     sidebarContent?: React.ReactNode;
     rightPanelContent?: React.ReactNode;
+    hasNewTools?: boolean;
 };
 
 export default function GlassLayout({
     children,
     sidebarContent,
     rightPanelContent,
+    hasNewTools = false,
 }: GlassLayoutProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
@@ -45,9 +47,15 @@ export default function GlassLayout({
                     {rightPanelContent && (
                         <button
                             onClick={() => setIsRightPanelOpen(!isRightPanelOpen)}
-                            className={`p-2 -mr-2 transition-colors ${isRightPanelOpen ? 'text-cyan-400' : 'text-gray-400'}`}
+                            className={`p-2 -mr-2 transition-colors relative ${isRightPanelOpen ? 'text-cyan-400' : 'text-gray-400'}`}
                         >
-                            <Rocket size={20} />
+                            <Rocket size={20} className={hasNewTools && !isRightPanelOpen ? 'animate-bounce text-cyan-400' : ''} />
+                            {hasNewTools && !isRightPanelOpen && (
+                                <span className="absolute top-2 right-1.5 flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                                </span>
+                            )}
                         </button>
                     )}
                 </div>
