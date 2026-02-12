@@ -6,9 +6,9 @@ export default function HomePage() {
     <div className="min-h-screen bg-[#0a0a1a] text-white font-sans relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/15 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-purple-600/15 rounded-full blur-[150px]" />
-        <div className="absolute top-[40%] right-[20%] w-[20%] h-[20%] bg-blue-500/10 rounded-full blur-[100px]" />
+        <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/15 rounded-full blur-[80px] lg:blur-[150px]" />
+        <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-purple-600/15 rounded-full blur-[80px] lg:blur-[150px]" />
+        <div className="absolute top-[40%] right-[20%] w-[20%] h-[20%] bg-blue-500/10 rounded-full blur-[60px] lg:blur-[100px]" />
       </div>
 
       {/* Navigation */}

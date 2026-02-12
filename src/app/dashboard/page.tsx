@@ -102,7 +102,7 @@ export default function DashboardPage() {
                             `}
                         />
                         <span className={`
-                            hidden lg:block text-[13px] tracking-wide transition-colors duration-200
+                            text-[13px] tracking-wide transition-colors duration-200
                             ${isActive ? 'font-semibold' : 'font-normal'}
                         `}>
                             {label}
@@ -216,8 +216,9 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Search Bar (Floating at Bottom) */}
-                <div className="p-6 lg:p-10 sticky bottom-0 z-20 w-full flex justify-center bg-gradient-to-t from-[#0a0a1a] via-[#0a0a1a]/80 to-transparent pt-20">
-                    <GlassSearch onSearch={handleSearch} placeholder="Pregunta sobre herramientas, estrategias o cumplimiento..." />
+                {/* Search Bar (Floating at Bottom) */}
+                <div className="p-4 lg:p-10 sticky bottom-0 z-20 w-full flex justify-center bg-gradient-to-t from-[#0a0a1a] via-[#0a0a1a]/95 to-transparent pt-10 lg:pt-20">
+                    <GlassSearch onSearch={handleSearch} placeholder="Pregunta sobre herramientas..." />
                 </div>
 
             </div>

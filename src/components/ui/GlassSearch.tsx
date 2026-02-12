@@ -19,7 +19,7 @@ export default function GlassSearch({ placeholder, onSearch }: GlassSearchProps)
             {/* Background Glow */}
             <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
 
-            <div className="relative flex items-center bg-black/40 backdrop-blur-xl border border-white/10 rounded-full px-6 py-4 transition-all duration-300 focus-within:ring-2 focus-within:ring-white/20">
+            <div className="relative flex items-center bg-[#0a0a1a] md:bg-black/40 md:backdrop-blur-xl border border-white/10 rounded-full px-6 py-4 transition-all duration-300 focus-within:ring-2 focus-within:ring-white/20">
                 <svg
                     className="w-6 h-6 text-gray-400 mr-4"
                     fill="none"
